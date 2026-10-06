@@ -1,0 +1,19 @@
+{
+  "framework": "next",
+  "language": "typescript",
+  "styling": "tailwind",
+  "theme": "modern",
+  "darkMode": "system",
+  "icons": "lucide",
+  "animations": true,
+  "packageManager": "npm",
+  "paths": {
+    "components": "src/components/ui",
+    "sections": "src/components/sections",
+    "layouts": "src/components/layouts",
+    "pages": "src/app",
+    "styles": "src/styles"
+  },
+  "hasTypeScript": true,
+  "cliVersion": "0.1.0"
+}
