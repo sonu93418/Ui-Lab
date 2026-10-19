@@ -91,3 +91,120 @@ export function validateConfig(raw: unknown): { success: true; data: UIGenConfig
     errors: result.error.errors.map((e) => `${e.path.join('.')}: ${e.message}`),
   };
 }
+
+// ─── Section 9: Create Contracts & Schemas ──────────────────────────────────
+
+export const InterfaceTypeSchema = z.enum([
+  'landing-page',
+  'dashboard',
+  'portfolio',
+  'auth',
+  'landing',
+]);
+
+export const FrameworkSchema = z.enum(['next', 'react', 'vite']);
+
+export const ThemeSchema = z.enum([
+  'modern',
+  'minimal',
+  'dark',
+  'glass',
+  'corporate',
+]);
+
+export const ColorModeSchema = z.enum(['system', 'light', 'dark']);
+
+export const DesignVariantSchema = z.enum(['standard', 'premium']);
+
+export const LandingPageSectionSchema = z.enum([
+  'navbar',
+  'hero',
+  'features',
+  'pricing',
+  'footer',
+  'testimonials',
+  'faq',
+  'cta',
+  'newsletter',
+]);
+
+export const CreateConfigSchema = z
+  .object({
+    interface: InterfaceTypeSchema,
+    framework: FrameworkSchema.default('next'),
+    theme: z.string().default('modern'),
+    colorMode: ColorModeSchema.default('system'),
+    variant: DesignVariantSchema.default('premium'),
+    sections: z.array(z.string()).min(1),
+    outputDir: z.string().min(1).default('src/components'),
+    dryRun: z.boolean().default(false),
+    yes: z.boolean().default(false),
+    force: z.boolean().default(false),
+  })
+  .superRefine((config, ctx) => {
+    if (new Set(config.sections).size !== config.sections.length) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['sections'],
+        message: 'Duplicate section IDs are not allowed.',
+      });
+    }
+
+    const canonicalInterface = config.interface === 'landing' ? 'landing-page' : config.interface;
+    if (
+      canonicalInterface === 'landing-page' &&
+      config.sections.some(
+        (s) =>
+          ![
+            'navbar',
+            'hero',
+            'features',
+            'pricing',
+            'footer',
+            'testimonials',
+            'faq',
+            'cta',
+            'newsletter',
+          ].includes(s)
+      )
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['sections'],
+        message: 'Unsupported landing page section.',
+      });
+    }
+  });
+
+export type CreateConfig = z.infer<typeof CreateConfigSchema>;
+
+export interface RawCreateOptions {
+  interface?: string;
+  framework?: string;
+  theme?: string;
+  colorMode?: string;
+  variant?: string;
+  sections?: string;
+  outDir?: string;
+  dryRun?: boolean;
+  yes?: boolean;
+  force?: boolean;
+  overwrite?: boolean;
+}
+
+export interface PlannedFile {
+  relativePath: string;
+  content?: string;
+  templateId: string;
+  templateVersion: string;
+  action: 'create' | 'skip' | 'overwrite';
+  exists: boolean;
+}
+
+export interface GenerationPlan {
+  config: CreateConfig;
+  files: PlannedFile[];
+  dependencies: string[];
+  warnings: string[];
+}
+

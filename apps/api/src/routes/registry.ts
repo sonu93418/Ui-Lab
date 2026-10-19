@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Component, ComponentVersion, Theme, Download } from '../models/index.js';
+import { Component, Theme, Download } from '../models/index.js';
 
 export const registryRouter = Router();
 

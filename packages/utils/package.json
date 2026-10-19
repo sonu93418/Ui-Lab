@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint src/",
+    "lint": "eslint --no-error-on-unmatched-pattern src/",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

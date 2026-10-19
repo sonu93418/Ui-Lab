@@ -95,7 +95,7 @@ adminRouter.post('/components', async (req: AuthRequest, res, next) => {
 
     if (req.user) {
       await AuditLog.create({
-        userId: req.user.sub,
+        userId: req.user.userId,
         action: 'CREATE_COMPONENT',
         resource: 'Component',
         resourceId: component._id,
@@ -136,7 +136,7 @@ adminRouter.put('/components/:slug', async (req: AuthRequest, res, next) => {
 
     if (req.user) {
       await AuditLog.create({
-        userId: req.user.sub,
+        userId: req.user.userId,
         action: 'UPDATE_COMPONENT',
         resource: 'Component',
         resourceId: component._id,
@@ -181,7 +181,7 @@ adminRouter.post('/components/:slug/versions', async (req: AuthRequest, res, nex
 
     if (req.user) {
       await AuditLog.create({
-        userId: req.user.sub,
+        userId: req.user.userId,
         action: 'PUBLISH_VERSION',
         resource: 'ComponentVersion',
         resourceId: versionDoc._id,
@@ -212,7 +212,7 @@ adminRouter.post('/themes', async (req: AuthRequest, res, next) => {
 
     if (req.user) {
       await AuditLog.create({
-        userId: req.user.sub,
+        userId: req.user.userId,
         action: 'CREATE_THEME',
         resource: 'Theme',
         resourceId: theme._id,

@@ -17,7 +17,10 @@ export function listCommand(): Command {
         if (!asJson) {
           logger.heading('Components');
           logger.blank();
-          const grouped = Object.groupBy(COMPONENTS_REGISTRY, (c) => c.category);
+          const grouped = COMPONENTS_REGISTRY.reduce<Record<string, typeof COMPONENTS_REGISTRY>>((acc, c) => {
+            (acc[c.category] ??= []).push(c);
+            return acc;
+          }, {});
           for (const [cat, entries] of Object.entries(grouped)) {
             if (!entries) continue;
             console.log(`  ${chalk.bold.dim(cat.toUpperCase())}`);
